@@ -33,8 +33,7 @@ export class MethodStubVerificator<T> {
         if (value !== allMatchingActions.length) {
             const methodToVerifyAsString = this.methodCallToStringConverter.convert(this.methodToVerify);
             const msg = `Expected "${methodToVerifyAsString}to be called ${value} time(s). But has been called ${allMatchingActions.length} time(s).`;
-            throw new Error(`${msg}
-${this.actualCalls()}`);
+            throw new Error(`${msg}\n${this.actualCalls()}`);
         }
     }
 
@@ -42,7 +41,8 @@ ${this.actualCalls()}`);
         const allMatchingActions = this.methodToVerify.mocker.getAllMatchingActions(this.methodToVerify.name, this.methodToVerify.matchers);
         if (value > allMatchingActions.length) {
             const methodToVerifyAsString = this.methodCallToStringConverter.convert(this.methodToVerify);
-            throw new Error(`Expected "${methodToVerifyAsString}to be called at least ${value} time(s). But has been called ${allMatchingActions.length} time(s).`);
+            const msg = `Expected "${methodToVerifyAsString}to be called at least ${value} time(s). But has been called ${allMatchingActions.length} time(s).`;
+            throw new Error(`${msg}\n${this.actualCalls()}`);
         }
     }
 
@@ -50,7 +50,8 @@ ${this.actualCalls()}`);
         const allMatchingActions = this.methodToVerify.mocker.getAllMatchingActions(this.methodToVerify.name, this.methodToVerify.matchers);
         if (value < allMatchingActions.length) {
             const methodToVerifyAsString = this.methodCallToStringConverter.convert(this.methodToVerify);
-            throw new Error(`Expected "${methodToVerifyAsString}to be called at least ${value} time(s). But has been called ${allMatchingActions.length} time(s).`);
+            const msg = `Expected "${methodToVerifyAsString}to be called at most ${value} time(s). But has been called ${allMatchingActions.length} time(s).`;
+            throw new Error(`${msg}\n${this.actualCalls()}`);
         }
     }
 
@@ -96,7 +97,6 @@ ${this.actualCalls()}`);
 
     private actualCalls() {
         const calls = this.methodToVerify.mocker.getActionsByName(this.methodToVerify.name);
-        return `Actual calls:
-  ${this.methodCallToStringConverter.convertActualCalls(calls).join("\n  ")}`;
+        return `Actual calls:\n  ${this.methodCallToStringConverter.convertActualCalls(calls).join("\n  ")}`;
     }
 }
