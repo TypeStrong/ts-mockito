@@ -786,36 +786,113 @@ cases.forEach(testData => {
         });
 
         describe("matcher error messages", () => {
-            it("should describe expected method call", () => {
+            it("should describe expected method call: called()", () => {
                 instance(mockedFoo).getStringById(2);
 
-                try {
-                    // when
-                    verify(mockedFoo.getStringById(1)).once();
+                expectException(() => {
+                    verify(mockedFoo.getStringById(1)).called();
+                }, errMsg => {
+                    expect(errMsg).toContain("Expected \"getStringById(strictEqual(1))\" to be called at least 1 time(s). But has been called 0 time(s).\n");
+                    expect(errMsg).toContain("Actual calls:\n");
+                    expect(errMsg).toContain("getStringById(2)");
+                });
+            });
 
-                    expect(true).toBe(false); // Above call should throw an exception
-                } catch (e) {
-                    // then
-                    expect(e.message).toContain("Expected \"getStringById(strictEqual(1))\" to be called 1 time(s). But has been called 0 time(s).\n");
-                    expect(e.message).toContain("Actual calls:\n");
-                    expect(e.message).toContain("getStringById(2)");
-                }
+            it("should describe expected method call: never()", () => {
+                instance(mockedFoo).getStringById(1);
+
+                expectException(() => {
+                    verify(mockedFoo.getStringById(1)).never();
+                }, errMsg => {
+                    expect(errMsg).toContain("Expected \"getStringById(strictEqual(1))\" to be called 0 time(s). But has been called 1 time(s).\n");
+                    expect(errMsg).toContain("Actual calls:\n");
+                    expect(errMsg).toContain("getStringById(1)");
+                });
+            });
+
+            it("should describe expected method call: once()", () => {
+                instance(mockedFoo).getStringById(2);
+
+                expectException(() => {
+                    verify(mockedFoo.getStringById(1)).once();
+                }, errMsg => {
+                    expect(errMsg).toContain("Expected \"getStringById(strictEqual(1))\" to be called 1 time(s). But has been called 0 time(s).\n");
+                    expect(errMsg).toContain("Actual calls:\n");
+                    expect(errMsg).toContain("getStringById(2)");
+                });
+            });
+
+            it("should describe expected method call: twice()", () => {
+                instance(mockedFoo).getStringById(2);
+
+                expectException(() => {
+                    verify(mockedFoo.getStringById(1)).twice();
+                }, errMsg => {
+                    expect(errMsg).toContain("Expected \"getStringById(strictEqual(1))\" to be called 2 time(s). But has been called 0 time(s).\n");
+                    expect(errMsg).toContain("Actual calls:\n");
+                    expect(errMsg).toContain("getStringById(2)");
+                });
+            });
+
+            it("should describe expected method call: thrice()", () => {
+                instance(mockedFoo).getStringById(2);
+
+                expectException(() => {
+                    verify(mockedFoo.getStringById(1)).thrice();
+                }, errMsg => {
+                    expect(errMsg).toContain("Expected \"getStringById(strictEqual(1))\" to be called 3 time(s). But has been called 0 time(s).\n");
+                    expect(errMsg).toContain("Actual calls:\n");
+                    expect(errMsg).toContain("getStringById(2)");
+                });
+            });
+
+            it("should describe expected method call: times(2)", () => {
+                instance(mockedFoo).getStringById(2);
+
+                expectException(() => {
+                    verify(mockedFoo.getStringById(1)).times(2);
+                }, errMsg => {
+                    expect(errMsg).toContain("Expected \"getStringById(strictEqual(1))\" to be called 2 time(s). But has been called 0 time(s).\n");
+                    expect(errMsg).toContain("Actual calls:\n");
+                    expect(errMsg).toContain("getStringById(2)");
+                });
+            });
+
+            it("should describe expected method call: atLeast(2)", () => {
+                instance(mockedFoo).getStringById(1);
+
+                expectException(() => {
+                    verify(mockedFoo.getStringById(1)).atLeast(2);
+                }, errMsg => {
+                    expect(errMsg).toContain("Expected \"getStringById(strictEqual(1))\" to be called at least 2 time(s). But has been called 1 time(s).\n");
+                    expect(errMsg).toContain("Actual calls:\n");
+                    expect(errMsg).toContain("getStringById(1)");
+                });
+            });
+
+            it("should describe expected method call: atMost(1)", () => {
+                instance(mockedFoo).getStringById(1);
+                instance(mockedFoo).getStringById(1);
+
+                expectException(() => {
+                    verify(mockedFoo.getStringById(1)).atMost(1);
+                }, errMsg => {
+                    expect(errMsg).toContain("Expected \"getStringById(strictEqual(1))\" to be called at most 1 time(s). But has been called 2 time(s).\n");
+                    expect(errMsg).toContain("Actual calls:\n");
+                    expect(errMsg).toContain("getStringById(1)\n  getStringById(1)");
+                });
             });
 
             it("should describe expected method call objects", () => {
                 instance(mockedFoo).sampleMethodWithObjectArguments({foo: 'baz'});
 
-                try {
-                    // when
+                expectException(() => {
                     verify(mockedFoo.sampleMethodWithObjectArguments(deepEqual({foo: 'bar'}))).once();
-
-                    expect(true).toBe(false); // Above call should throw an exception
-                } catch (e) {
-                    // then
-                    expect(e.message).toContain('Expected "sampleMethodWithObjectArguments(deepEqual({\"foo\":\"bar\"}))" to be called 1 time(s). But has been called 0 time(s).\n');
-                    expect(e.message).toContain("Actual calls:\n");
-                    expect(e.message).toContain(`sampleMethodWithObjectArguments({\"foo\":\"baz\"})`);
-                }
+                }, errMsg => {
+                    expect(errMsg).toContain('Expected "sampleMethodWithObjectArguments(deepEqual({\"foo\":\"bar\"}))" to be called 1 time(s). But has been called 0 time(s).\n');
+                    expect(errMsg).toContain("Actual calls:\n");
+                    expect(errMsg).toContain(`sampleMethodWithObjectArguments({\"foo\":\"baz\"})`);
+                });
             });
         });
 
@@ -849,7 +926,7 @@ cases.forEach(testData => {
                 "special_chars-@?": () => {
                     // do nothing
                 }
-            }
+            };
 
             it("should mock class", () => {
                 const mocked = mock(TestClass);
@@ -868,3 +945,14 @@ function verifyCallCountErrorMessage(error, expectedCallCount, receivedCallCount
     expect(error.message).toContain(`${expectedCallCount} time(s). But`);
     expect(error.message).toContain(`has been called ${receivedCallCount} time(s)`);
 }
+
+const expectException = (doSomethingThatRaises: () => void, checkExceptionMessage: (errMsg: string) => void) => {
+    try {
+        // when
+        doSomethingThatRaises();
+        fail("Expected an exception, but nothing was raised");
+    } catch (e) {
+        // then
+        checkExceptionMessage(e.message);
+    }
+};
