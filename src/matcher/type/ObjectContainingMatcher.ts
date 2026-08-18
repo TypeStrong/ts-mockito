@@ -1,4 +1,4 @@
-import * as _ from "lodash";
+import _ from "lodash";
 import {Matcher} from "./Matcher";
 
 export class ObjectContainingMatcher extends Matcher {
@@ -6,7 +6,7 @@ export class ObjectContainingMatcher extends Matcher {
         super();
     }
 
-    public match(value: Object): boolean {
+    public match(value: object): boolean {
         return _.isMatch(value, this.expectedValue);
     }
 

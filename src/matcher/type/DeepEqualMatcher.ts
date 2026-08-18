@@ -1,6 +1,6 @@
-import * as _ from "lodash";
+import _ from "lodash";
 import {Matcher} from "./Matcher";
-import * as safeJsonStringify from "safe-json-stringify";
+import safeJsonStringify from "safe-json-stringify";
 export class DeepEqualMatcher<T> extends Matcher {
     constructor(private expectedValue: T) {
         super();

@@ -5,7 +5,7 @@ export class BetweenMatcher extends Matcher {
         super();
 
         if (min > max) {
-            throw new Error("between matcher error: min value can\'t be greater than max");
+            throw new Error("between matcher error: min value can't be greater than max");
         }
     }
 

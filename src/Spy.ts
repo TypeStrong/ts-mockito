@@ -1,4 +1,4 @@
-import * as _ from "lodash";
+import _ from "lodash";
 import {Mocker} from "./Mock";
 import {RealMethod} from "./spy/RealMethod";
 import {CallThroughMethodStub} from "./stub/CallThroughMethodStub";

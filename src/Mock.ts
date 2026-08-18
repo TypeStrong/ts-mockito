@@ -1,4 +1,4 @@
-import * as _ from "lodash";
+import _ from "lodash";
 import {Matcher} from "./matcher/type/Matcher";
 import {MethodAction} from "./MethodAction";
 import {MethodStubCollection} from "./MethodStubCollection";
@@ -142,7 +142,7 @@ export class Mocker {
     protected createInstancePropertyDescriptorListener(key: string,
                                                        descriptor: PropertyDescriptor,
                                                        prototype: any): void {
-        if (this.instance.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(this.instance, key)) {
             return;
         }
 
@@ -152,7 +152,7 @@ export class Mocker {
     }
 
     protected createInstanceActionListener(key: string, prototype: any): void {
-        if (this.instance.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(this.instance, key)) {
             return;
         }
 
@@ -182,7 +182,7 @@ export class Mocker {
     }
 
     private createPropertyStub(key: string): void {
-        if (this.mock.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(this.mock, key)) {
             return;
         }
 
@@ -192,7 +192,7 @@ export class Mocker {
     }
 
     private createMethodStub(key) {
-        if (this.mock.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(this.mock, key)) {
             return;
         }
 

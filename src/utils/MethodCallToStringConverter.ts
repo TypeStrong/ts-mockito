@@ -1,7 +1,7 @@
 import {Matcher} from "../matcher/type/Matcher";
 import {MethodAction} from "../MethodAction";
 import {MethodToStub} from "../MethodToStub";
-import * as safeJsonStringify from "safe-json-stringify";
+import safeJsonStringify from "safe-json-stringify";
 
 export class MethodCallToStringConverter {
     public convert(method: MethodToStub): string {
@@ -18,6 +18,6 @@ export class MethodCallToStringConverter {
     }
 
     private objectIsStringable(arg) {
-        return typeof arg !== 'object' || arg.hasOwnProperty('toString');
+        return typeof arg !== 'object' || Object.prototype.hasOwnProperty.call(arg, 'toString');
     }
 }

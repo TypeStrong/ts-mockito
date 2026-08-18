@@ -1,6 +1,7 @@
 import {MethodToStub} from "./MethodToStub";
 import {MethodCallToStringConverter} from "./utils/MethodCallToStringConverter";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- T is part of the public generic API shape, kept for consumers who reference it explicitly
 export class MethodStubVerificator<T> {
     private methodCallToStringConverter: MethodCallToStringConverter = new MethodCallToStringConverter();
 
