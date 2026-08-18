@@ -1,4 +1,6 @@
 coverage
+coverage.lcov
+test-results.xml
 lib
 dist
 node_modules

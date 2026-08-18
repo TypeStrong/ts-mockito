@@ -1,4 +1,4 @@
-import * as _ from "lodash";
+import _ from "lodash";
 import {Matcher} from "./Matcher";
 
 export class AnyStringMatcher extends Matcher {

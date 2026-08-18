@@ -5,6 +5,7 @@ import {ResolvePromiseMethodStub} from "./stub/ResolvePromiseMethodStub";
 import {ReturnValueMethodStub} from "./stub/ReturnValueMethodStub";
 import {ThrowErrorMethodStub} from "./stub/ThrowErrorMethodStub";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- RejectType is part of the public generic API shape, kept for consumers who reference it explicitly
 export class MethodStubSetter<T, ResolveType = void, RejectType = Error> {
     private static globalGroupIndex: number = 0;
     private groupIndex: number;

@@ -32,6 +32,7 @@ export function spy<T>(instanceToSpy: T): T {
     return new Spy(instanceToSpy).getMock();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type -- accepts abstract class constructors too, which aren't valid `new (...) => T` types
 export function mock<T>(clazz: (new(...args: any[]) => T) | (Function & { prototype: T }) ): T;
 export function mock<T>(clazz?: any): T;
 export function mock<T>(clazz?: any): T {
@@ -44,7 +45,7 @@ export function verify<T>(method: T): MethodStubVerificator<T> {
 
 export function when<T>(method: Promise<T>): MethodStubSetter<Promise<T>, T, Error>;
 export function when<T>(method: T): MethodStubSetter<T>;
-export function when<T>(method: any): any {
+export function when(method: any): any {
     return new MethodStubSetter(method);
 }
 
@@ -121,6 +122,7 @@ export function match(expectedValue: RegExp | string): any {
     return new MatchingStringMatcher(expectedValue) as any;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-wrapper-object-types -- narrowing to `object` would reject primitives consumers could previously pass, a public API break
 export function objectContaining<T extends Object>(expectedValue: T): any {
     return new ObjectContainingMatcher(expectedValue) as any;
 }

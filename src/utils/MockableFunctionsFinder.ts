@@ -2,7 +2,7 @@ import {parse} from "@babel/parser";
 import * as _babel_types from "@babel/types";
 import {ObjectInspector} from "./ObjectInspector";
 import {ObjectPropertyCodeRetriever} from "./ObjectPropertyCodeRetriever";
-import {uniq} from "lodash";
+import _ from "lodash";
 import {
     AssignmentExpression,
     Block,
@@ -24,7 +24,8 @@ const methodTokenName = new Set([
     "ClassMethod",
     "ClassPrivateMethod",
     "FunctionDeclaration",
-    "FunctionExpression"
+    "FunctionExpression",
+    "ArrowFunctionExpression"
 ]);
 
 function getPropName(n: Identifier | StringLiteral | NumericLiteral | _babel_types.Expression | PrivateName): string[] {
@@ -34,9 +35,25 @@ function getPropName(n: Identifier | StringLiteral | NumericLiteral | _babel_typ
     return handleExpression(n);
 }
 
+// Bundlers (e.g. esbuild's `keepNames`) wrap function/arrow expressions in a
+// `__name(fn, "name")` call to preserve `.name` after transpilation. Unwrap
+// it so the wrapped function's real type is used for method detection.
+function unwrapNameHelper(n: Expression): Expression {
+    if (n.type === "CallExpression"
+        && n.callee.type === "Identifier"
+        && n.callee.name === "__name"
+        && n.arguments.length > 0
+        && n.arguments[0].type !== "SpreadElement"
+        && (n.arguments[0].type as string) !== "ArgumentPlaceholder"
+        && (n.arguments[0].type as string) !== "JSXNamespacedName") {
+        return n.arguments[0] as Expression;
+    }
+    return n;
+}
+
 function handleAssignment(n: AssignmentExpression): string[] {
-    if (methodTokenName.has(n.right.type))
-        return [...handleLVal(n.left), ...handleExpression(n.right)];
+    if (methodTokenName.has(unwrapNameHelper(n.right).type))
+        return [...handleLVal(n.left as LVal), ...handleExpression(n.right)];
     return handleExpression(n.right);
 }
 
@@ -63,7 +80,7 @@ function handleExpression(n?: Expression | null): string[] {
             return [...(n.left.type !== 'PrivateName' ? handleExpression(n.left) : []), ...handleExpression(n.right)];
         case "CallExpression":
             return n.arguments.flatMap(a => {
-                if (a.type === 'JSXNamespacedName') return [];
+                if ((a.type as string) === 'JSXNamespacedName') return [];
                 if (a.type === 'ArgumentPlaceholder') return [];
                 return isSpread(a) ? handleUnaryLike(a) : handleExpression(a);
             });
@@ -97,11 +114,13 @@ function handleExpression(n?: Expression | null): string[] {
         case "TemplateLiteral":
             return n.expressions.flatMap(e => handleExpression(e as Expression));
         case "OptionalMemberExpression":
-            return [...(n.property.type !== 'Identifier' ? handleExpression(n.property) : [])];
+            if (n.property.type === 'Identifier') return [];
+            if (n.property.type === 'PrivateName') return handleExpression(n.property.id);
+            return handleExpression(n.property);
         case "OptionalCallExpression":
             return n.arguments.flatMap(a => {
                 if (a.type === 'SpreadElement') return handleExpression(a.argument);
-                if (a.type === 'JSXNamespacedName') return [];
+                if ((a.type as string) === 'JSXNamespacedName') return [];
                 if (a.type === 'ArgumentPlaceholder') return [];
                 return handleExpression(a);
             });
@@ -109,7 +128,6 @@ function handleExpression(n?: Expression | null): string[] {
             return handleExpression(n.object);
         case "DoExpression":
             return handleBlock(n.body);
-        case "RecordExpression":
         case "NewExpression":
         case "StringLiteral":
         case "NumericLiteral":
@@ -118,15 +136,10 @@ function handleExpression(n?: Expression | null): string[] {
         case "NullLiteral":
         case "ThisExpression":
         case "MetaProperty":
-        case "Super":
-        case "Import":
         case "BigIntLiteral":
         case "TypeCastExpression":
         case "JSXElement":
         case "JSXFragment":
-        case "PipelinePrimaryTopicReference":
-        case "TupleExpression":
-        case "DecimalLiteral":
         case "ModuleExpression":
         case "TSAsExpression":
         case "TSTypeAssertion":
@@ -237,6 +250,8 @@ function handleClass(n: Class | ClassExpression): string[] {
             case "TSIndexSignature":
             case "TSDeclareMethod":
                 return [];
+            default:
+                return [];
         }
     });
 }
@@ -262,7 +277,7 @@ export class MockableFunctionsFinder {
         const codes = this.getClassCodeAsStringWithInheritance(clazz);
         const asts = codes.map(code => parse(code));
         const names = asts.flatMap(ast => handleBody(ast.program));
-        return uniq(names)
+        return _.uniq(names)
             .filter((functionName: string) => this.isMockable(functionName));
     }
 

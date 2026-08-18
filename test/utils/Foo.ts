@@ -1,6 +1,6 @@
 export class Foo {
-    public dynamicMethod: Function;
-    public dynamicMethodInFunction: Function;
+    public dynamicMethod: (...args: any[]) => any;
+    public dynamicMethodInFunction: (...args: any[]) => any;
 
     constructor() {
         this.dynamicMethod = () => "dynamicMethod";
