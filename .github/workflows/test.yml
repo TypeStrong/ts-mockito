@@ -3,10 +3,11 @@ on: [pull_request, push]
 jobs:
   lint-build:
     name: "Lint & Build"
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest, macOS-latest ]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
 
     steps:
       # checkout code
@@ -20,8 +21,14 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm run test:compile-check
-      - run: npm test
+      - run: npm run test:ci
       - run: npm run lint
+      - name: Comment test results on PR
+        if: always() && github.event_name == 'pull_request'
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          comment_mode: always
+          files: test-results.xml
       - name: Codecov
         uses: codecov/codecov-action@v4
         with:
