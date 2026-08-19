@@ -27,8 +27,8 @@ export class Mocker {
             if (!isSpy || typeof Proxy === "undefined") {
                 this.processClassCode(this.clazz);
             }
-            if (!isSpy && this.clazz.prototype) {
-                Object.setPrototypeOf(this.instance, this.clazz.prototype);
+            if (!isSpy && (this.clazz as any).prototype) {
+                Object.setPrototypeOf(this.instance, (this.clazz as any).prototype);
             }
         }
         if (typeof Proxy !== "undefined" && this.clazz) {
