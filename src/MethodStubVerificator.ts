@@ -11,7 +11,7 @@ import {MethodCallToStringConverter} from "./utils/MethodCallToStringConverter";
 export class MethodStubVerificator<T> {
     private methodCallToStringConverter: MethodCallToStringConverter = new MethodCallToStringConverter();
 
-    constructor(private methodToVerify: MethodToStub) {
+    constructor(private methodToVerify: MethodToStub, private customMessage?: string) {
 
     }
 
@@ -60,7 +60,7 @@ export class MethodStubVerificator<T> {
         if (value !== allMatchingActions.length) {
             const methodToVerifyAsString = this.methodCallToStringConverter.convert(this.methodToVerify);
             const msg = `Expected "${methodToVerifyAsString}to be called ${value} time(s). But has been called ${allMatchingActions.length} time(s).`;
-            throw new Error(`${msg}
+            this.fail(`${msg}
 ${this.actualCalls()}`);
         }
     }
@@ -74,7 +74,7 @@ ${this.actualCalls()}`);
         const allMatchingActions = this.methodToVerify.mocker.getAllMatchingActions(this.methodToVerify.name, this.methodToVerify.matchers);
         if (value > allMatchingActions.length) {
             const methodToVerifyAsString = this.methodCallToStringConverter.convert(this.methodToVerify);
-            throw new Error(`Expected "${methodToVerifyAsString}to be called at least ${value} time(s). But has been called ${allMatchingActions.length} time(s).`);
+            this.fail(`Expected "${methodToVerifyAsString}to be called at least ${value} time(s). But has been called ${allMatchingActions.length} time(s).`);
         }
     }
 
@@ -87,7 +87,7 @@ ${this.actualCalls()}`);
         const allMatchingActions = this.methodToVerify.mocker.getAllMatchingActions(this.methodToVerify.name, this.methodToVerify.matchers);
         if (value < allMatchingActions.length) {
             const methodToVerifyAsString = this.methodCallToStringConverter.convert(this.methodToVerify);
-            throw new Error(`Expected "${methodToVerifyAsString}to be called at least ${value} time(s). But has been called ${allMatchingActions.length} time(s).`);
+            this.fail(`Expected "${methodToVerifyAsString}to be called at least ${value} time(s). But has been called ${allMatchingActions.length} time(s).`);
         }
     }
 
@@ -112,14 +112,14 @@ ${this.actualCalls()}`);
 
         if (firstMethodAction && secondMethodAction) {
             if (!firstMethodAction.hasBeenCalledBefore(secondMethodAction)) {
-                throw new Error(`${errorBeginning}but has been called after.`);
+                this.fail(`${errorBeginning}but has been called after.`);
             }
         } else if (firstMethodAction && !secondMethodAction) {
-            throw new Error(`${errorBeginning}but ${secondMethodAsString}has never been called.`);
+            this.fail(`${errorBeginning}but ${secondMethodAsString}has never been called.`);
         } else if (!firstMethodAction && secondMethodAction) {
-            throw new Error(`${errorBeginning}but ${mainMethodToVerifyAsString}has never been called.`);
+            this.fail(`${errorBeginning}but ${mainMethodToVerifyAsString}has never been called.`);
         } else {
-            throw new Error(`${errorBeginning}but none of them has been called.`);
+            this.fail(`${errorBeginning}but none of them has been called.`);
         }
     }
 
@@ -144,14 +144,14 @@ ${this.actualCalls()}`);
 
         if (firstMethodAction && secondMethodAction) {
             if (firstMethodAction.hasBeenCalledBefore(secondMethodAction)) {
-                throw new Error(`${errorBeginning}but has been called before.`);
+                this.fail(`${errorBeginning}but has been called before.`);
             }
         } else if (firstMethodAction && !secondMethodAction) {
-            throw new Error(`${errorBeginning}but ${secondMethodAsString}has never been called.`);
+            this.fail(`${errorBeginning}but ${secondMethodAsString}has never been called.`);
         } else if (!firstMethodAction && secondMethodAction) {
-            throw new Error(`${errorBeginning}but ${mainMethodToVerifyAsString}has never been called.`);
+            this.fail(`${errorBeginning}but ${mainMethodToVerifyAsString}has never been called.`);
         } else {
-            throw new Error(`${errorBeginning}but none of them has been called.`);
+            this.fail(`${errorBeginning}but none of them has been called.`);
         }
     }
 
@@ -159,5 +159,9 @@ ${this.actualCalls()}`);
         const calls = this.methodToVerify.mocker.getActionsByName(this.methodToVerify.name);
         return `Actual calls:
   ${this.methodCallToStringConverter.convertActualCalls(calls).join("\n  ")}`;
+    }
+
+    private fail(message: string): never {
+        throw new Error(this.customMessage ? `${this.customMessage}\n${message}` : message);
     }
 }

@@ -87,15 +87,18 @@ export function mock<T>(clazz?: any): T {
  * the given arguments, or matchers in their place.
  *
  * @param method a call made on a mock, e.g. `mockedFoo.getBar(3)`
+ * @param customMessage an optional message prepended to the failure output if the verification
+ * fails, e.g. for extra context (like `jest-expect-message`'s custom messages)
  * @returns a {@link MethodStubVerificator} with `.once()`, `.times(n)`, `.calledBefore()`, etc.
  * @example
  * ```
  * verify(mockedFoo.getBar(3)).once();
  * verify(mockedFoo.getBar(anything())).called();
+ * verify(mockedFoo.getBar(3), 'getBar should have been called with 3').once();
  * ```
  */
-export function verify<T>(method: T): MethodStubVerificator<T> {
-    return new MethodStubVerificator(method as any);
+export function verify<T>(method: T, customMessage?: string): MethodStubVerificator<T> {
+    return new MethodStubVerificator(method as any, customMessage);
 }
 
 /**

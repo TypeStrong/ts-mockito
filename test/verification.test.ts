@@ -852,6 +852,51 @@ cases.forEach(testData => {
                     expect(e.message).toContain("getStringById(undefined)");
                 }
             });
+
+            it("should prepend a supplied custom message without losing the default diagnostics", () => {
+                instance(mockedFoo).getStringById(2);
+
+                try {
+                    // when
+                    verify(mockedFoo.getStringById(1), "getStringById should have been called with 1").once();
+
+                    expect(true).toBe(false); // Above call should throw an exception
+                } catch (e) {
+                    // then
+                    expect(e.message).toContain("getStringById should have been called with 1");
+                    expect(e.message).toContain("Expected \"getStringById(strictEqual(1))\" to be called 1 time(s). But has been called 0 time(s).\n");
+                    expect(e.message).toContain("Actual calls:\n");
+                    expect(e.message).toContain("getStringById(2)");
+                }
+            });
+
+            it("should not alter the error message when no custom message is supplied", () => {
+                try {
+                    // when
+                    verify(mockedFoo.getStringById(1)).once();
+
+                    expect(true).toBe(false); // Above call should throw an exception
+                } catch (e) {
+                    // then
+                    expect(e.message).toEqual("Expected \"getStringById(strictEqual(1))\" to be called 1 time(s). But has been called 0 time(s).\nActual calls:\n  ");
+                }
+            });
+
+            it("should prepend a supplied custom message to calledBefore failures too", () => {
+                foo.convertNumberToString(1);
+
+                try {
+                    // when
+                    verify(mockedFoo.convertNumberToString(1), "convertNumberToString should run before getStringById")
+                        .calledBefore(mockedFoo.getStringById(999999));
+
+                    expect(true).toBe(false); // Above call should throw an exception
+                } catch (e) {
+                    // then
+                    expect(e.message).toContain("convertNumberToString should run before getStringById");
+                    expect(e.message).toContain("has never been called.");
+                }
+            });
         });
 
         describe("decorator + Proxy", () => {
