@@ -1,0 +1,43 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/*
+ * Palette pulled from website/static/img/mockito_masks.svg:
+ * - navy #34415e (tragedy mask)   - primary in light mode
+ * - amber #e7a94c (comedy mask)   - primary in dark mode, and used as an accent everywhere
+ * - cream #f5efe3 / charcoal #221f1b - mask ink/outline neutrals
+ */
+:root {
+  --ifm-color-primary: #34415e;
+  --ifm-color-primary-dark: #2a354c;
+  --ifm-color-primary-darker: #20283a;
+  --ifm-color-primary-darkest: #171d29;
+  --ifm-color-primary-light: #415175;
+  --ifm-color-primary-lighter: #4d618c;
+  --ifm-color-primary-lightest: #5a71a3;
+  --ifm-color-secondary: #e7a94c;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(52, 65, 94, 0.1);
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme='dark'] {
+  --ifm-color-primary: #e7a94c;
+  --ifm-color-primary-dark: #e29828;
+  --ifm-color-primary-darker: #c7821b;
+  --ifm-color-primary-darkest: #a36a16;
+  --ifm-color-primary-light: #ecba70;
+  --ifm-color-primary-lighter: #f1cc94;
+  --ifm-color-primary-lightest: #f5ddb8;
+  --ifm-color-secondary: #829dd5;
+  --docusaurus-highlighted-code-line-bg: rgba(231, 169, 76, 0.15);
+}
+
+.footer {
+  a:hover{
+    color: var(--ifm-color-primary-lightest);
+  }
+}

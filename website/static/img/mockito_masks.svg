@@ -1,0 +1,44 @@
+<svg viewBox="0 0 600 440" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .mask-outline { stroke: #221F1B; stroke-width: 5; stroke-linejoin: round; }
+      .curl-outline { stroke: #221F1B; stroke-width: 3; }
+      .letter { font-family: Helvetica, Arial, sans-serif; font-weight: 700; text-anchor: middle; dominant-baseline: central; }
+      .wordmark { font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-weight: 600; text-anchor: middle; letter-spacing: 8px; }
+    </style>
+  </defs>
+
+  <!-- ================= TRAGEDY MASK (left, back layer, rotated) ================= -->
+  <g transform="rotate(-12 225 175)">
+    <path class="mask-outline" fill="#34415E"
+      d="M 140,105
+         C 140,45 310,45 310,105
+         C 335,155 320,235 285,285
+         C 260,325 190,325 165,285
+         C 130,235 115,155 140,105
+         Z" />
+
+    <text x="225" y="155" class="letter" font-size="118" fill="#F5EFE3">T</text>
+
+    <path d="M 185,230 Q 225,200 265,230" fill="none" stroke="#F5EFE3" stroke-width="7" stroke-linecap="round"/>
+  </g>
+
+  <!-- ================= COMEDY MASK (right, front layer, rotated) ================= -->
+  <g transform="rotate(10 375 195)">
+    <path class="mask-outline" fill="#E7A94C"
+      d="M 290,125
+         C 290,65 460,65 460,125
+         C 485,175 470,255 435,305
+         C 410,345 340,345 315,305
+         C 280,255 265,175 290,125
+         Z" />
+
+    <text x="375" y="175" class="letter" font-size="118" fill="#2E3550">S</text>
+
+    <path d="M 335,240 Q 375,280 415,240" fill="none" stroke="#2E3550" stroke-width="7" stroke-linecap="round"/>
+  </g>
+
+  <!-- ================= WORDMARK ================= -->
+  <text x="300" y="400" class="wordmark" font-size="46" fill="white">ts-mockito</text>
+  <line x1="222" y1="418" x2="378" y2="418" stroke="#E7A94C" stroke-width="3"/>
+</svg>

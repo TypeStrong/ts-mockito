@@ -21,4 +21,8 @@ export class ReturnValueMethodStub extends AbstractMethodStub implements MethodS
     public getValue(): any {
         return this.returns;
     }
+
+    public getMatchers(): Matcher[] {
+        return this.matchers;
+    }
 }
