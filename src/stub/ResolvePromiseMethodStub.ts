@@ -21,4 +21,8 @@ export class ResolvePromiseMethodStub extends AbstractMethodStub implements Meth
     public getValue(): any {
         return Promise.resolve(this.value);
     }
+
+    public getMatchers(): Matcher[] {
+        return this.matchers;
+    }
 }

@@ -1,3 +1,4 @@
+import {Matcher} from "../matcher/type/Matcher";
 import {MethodStub} from "./MethodStub";
 
 export class CallThroughMethodStub implements MethodStub {
@@ -20,5 +21,9 @@ export class CallThroughMethodStub implements MethodStub {
 
     public getValue(): any {
         return this.result;
+    }
+
+    public getMatchers(): Matcher[] {
+        return [];
     }
 }

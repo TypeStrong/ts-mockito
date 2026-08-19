@@ -21,4 +21,8 @@ export class RejectPromiseMethodStub extends AbstractMethodStub implements Metho
     public getValue(): any {
         return Promise.reject(this.value);
     }
+
+    public getMatchers(): Matcher[] {
+        return this.matchers;
+    }
 }

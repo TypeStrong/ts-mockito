@@ -6,6 +6,7 @@ import {MethodToStub} from "./MethodToStub";
 import {MethodStub} from "./stub/MethodStub";
 import {ReturnValueMethodStub} from "./stub/ReturnValueMethodStub";
 import {strictEqual} from "./ts-mockito";
+import {MethodCallToStringConverter} from "./utils/MethodCallToStringConverter";
 import {MockableFunctionsFinder} from "./utils/MockableFunctionsFinder";
 import {ObjectInspector} from "./utils/ObjectInspector";
 
@@ -14,6 +15,7 @@ export class Mocker {
     private methodStubCollections: any = {};
     private methodActions: MethodAction[] = [];
     private mockableFunctionsFinder = new MockableFunctionsFinder();
+    private methodCallToStringConverter = new MethodCallToStringConverter();
     private excludedPropertyNames: string[] = ["hasOwnProperty"];
     private defaultedPropertyNames: string[] = ["Symbol(Symbol.toPrimitive)", "then", "catch"];
 
@@ -24,6 +26,9 @@ export class Mocker {
             this.processProperties((this.clazz as any).prototype);
             if (!isSpy || typeof Proxy === "undefined") {
                 this.processClassCode(this.clazz);
+            }
+            if (!isSpy && this.clazz.prototype) {
+                Object.setPrototypeOf(this.instance, this.clazz.prototype);
             }
         }
         if (typeof Proxy !== "undefined" && this.clazz) {
@@ -170,7 +175,27 @@ export class Mocker {
     }
 
     protected getEmptyMethodStub(key: string, args: any[]): MethodStub {
+        this.warnAboutUnmatchedStub(key, args);
         return new ReturnValueMethodStub(-1, [], null);
+    }
+
+    private warnAboutUnmatchedStub(key: string, args: any[]): void {
+        const stubCollection: MethodStubCollection = this.methodStubCollections[key];
+        if (!stubCollection) {
+            return;
+        }
+
+        const configuredMatchers = stubCollection.getConfiguredMatchers();
+        if (configuredMatchers.length === 0) {
+            return;
+        }
+
+        const actualCall = this.methodCallToStringConverter.convertActualCalls([new MethodAction(key, args)])[0];
+        const configuredCalls = configuredMatchers.map((matchers: Matcher[]) =>
+            this.methodCallToStringConverter.convertMatchers(key, matchers));
+
+        // eslint-disable-next-line no-console -- this is a diagnostic aid for issue #66, not application logging
+        console.warn(`ts-mockito: called ${actualCall} which does not match any configured stub for "${key}". Configured stub(s):\n  ${configuredCalls.join("\n  ")}`);
     }
 
     private processClassCode(clazz: any): void {
