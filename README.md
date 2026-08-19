@@ -5,6 +5,8 @@
 
 Mocking library for TypeScript inspired by http://mockito.org/
 
+## Documentation https://typestrong.org/ts-mockito/
+
 ## 1.x to 2.x migration guide
 [1.x to 2.x migration guide](https://github.com/cspotcode/ts-mockito/wiki/ts-mockito-1.x-to-2.x-migration-guide)
 
