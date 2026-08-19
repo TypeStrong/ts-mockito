@@ -28,6 +28,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+      - run: npm ci
       - run: npm ci --prefix website
       - run: npm run build --prefix website
       - uses: actions/upload-pages-artifact@v3
