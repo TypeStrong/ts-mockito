@@ -321,18 +321,34 @@ console.log(foo.getBar(1));	// three
 console.log(foo.getBar(1));	// three - last defined behavior will be repeated infinity
 ```
 
-Possible errors:
+### Overlapping matchers
+
+When more than one stub matches the same call, the most recently defined one wins - not the
+most specific one. This lets you set a default behavior first and override it for specific
+inputs afterwards:
 
 ``` typescript
 const mockedFoo:Foo = mock(Foo);
 
-// When multiple matchers, matches same result:
-when(mockedFoo.getBar(anyNumber())).thenReturn('one');
-when(mockedFoo.getBar(3)).thenReturn('one');
+when(mockedFoo.getBar(anyNumber())).thenReturn('default');
+when(mockedFoo.getBar(3)).thenReturn('three');
 
 const foo:Foo = instance(mockedFoo);
-foo.getBar(3); // MultipleMatchersMatchSameStubError will be thrown, two matchers match same method call
+console.log(foo.getBar(3));  // 'three' - the more recently defined stub wins
+console.log(foo.getBar(5));  // 'default' - falls back to the only matching stub
+```
 
+Defining them in the opposite order changes which one wins, since it's always "last defined,"
+not "most specific":
+
+``` typescript
+const mockedFoo:Foo = mock(Foo);
+
+when(mockedFoo.getBar(3)).thenReturn('three');
+when(mockedFoo.getBar(anyNumber())).thenReturn('default');
+
+const foo:Foo = instance(mockedFoo);
+console.log(foo.getBar(3));  // 'default' - defined after the '3'-specific stub, so it wins even for 3
 ```
 
 ### Mocking interfaces
@@ -341,8 +357,8 @@ You can mock interfaces too, just instead of passing type to `mock` function, se
 Mocking interfaces requires `Proxy` implementation
 
 ``` typescript
-let mockedFoo:Foo = mock<FooInterface>(); // instead of mock(FooInterface)
-const foo: SampleGeneric<FooInterface> = instance(mockedFoo);
+let mockedFoo: FooInterface = mock<FooInterface>(); // instead of mock(FooInterface)
+const foo: FooInterface = instance(mockedFoo);
 ```
 
 ### Mocking types
