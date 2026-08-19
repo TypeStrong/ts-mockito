@@ -303,6 +303,9 @@ export function objectContaining<T extends Object>(expectedValue: T): any {
     return new ObjectContainingMatcher(expectedValue) as any;
 }
 
+/**
+ * @hidden
+ */
 // Export default object with all members (ember-browserify doesn't support named exports).
 export default {
     spy,

@@ -30,7 +30,9 @@
     "test:ci": "node --import tsx --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=coverage.lcov --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=test-results.xml \"test/**/*.test.ts\"",
     "test:watch": "node --import tsx --test --watch \"test/**/*.test.ts\"",
     "test:compile-check": "tsc --noEmit -p tsconfig.json",
-    "lint": "eslint src test"
+    "lint": "eslint src test",
+    "docs:start": "npm --prefix website start",
+    "docs:build": "npm --prefix website run build"
   },
   "author": "kuster.maciej@gmail.com",
   "contributors": [

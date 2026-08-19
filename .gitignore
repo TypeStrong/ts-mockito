@@ -5,3 +5,6 @@ lib
 dist
 node_modules
 .idea
+website/build
+website/.docusaurus
+website/docs/api

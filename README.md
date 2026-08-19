@@ -1,6 +1,7 @@
-# @typestrong/ts-mockito [![build badge](https://github.com/TypeStrong/ts-mockito/actions/workflows/test.yml/badge.svg)](https://github.com/TypeStrong/ts-mockito/actions?query=branch%3Amaster) [![codecov](https://codecov.io/gh/TypeStrong/ts-mockito/branch/master/graph/badge.svg)](https://codecov.io/gh/TypeStrong/ts-mockito)
+# @typestrong/ts-mockito 
+![NPM Version](https://img.shields.io/npm/v/%40typestrong%2Fts-mockito?style=flat) [![build badge](https://github.com/TypeStrong/ts-mockito/actions/workflows/test.yml/badge.svg)](https://github.com/TypeStrong/ts-mockito/actions?query=branch%3Amaster) [![codecov](https://codecov.io/gh/TypeStrong/ts-mockito/branch/master/graph/badge.svg)](https://codecov.io/gh/TypeStrong/ts-mockito)
 
-> This is a fork of https://github.com/NagRock/ts-mockito.  We hope to eventually re-merge and publish as ts-mockito.
+> This is a fork of https://github.com/NagRock/ts-mockito, which appears to be abandoned.
 
 Mocking library for TypeScript inspired by http://mockito.org/
 
@@ -91,8 +92,6 @@ console.log(foo.sampleGetter);
 
 Syntax is the same as with getter values.
 
-Please note, that stubbing properties that don't have getters only works if [Proxy](http://www.ecma-international.org/ecma-262/6.0/#sec-proxy-objects) object is available (ES6).
-
 ### Call count verification
 
 ``` typescript
@@ -112,7 +111,7 @@ foo.getBar(3);
 verify(mockedFoo.getBar(1)).once();               // was called with arg === 1 only once
 verify(mockedFoo.getBar(2)).twice();              // was called with arg === 2 exactly two times
 verify(mockedFoo.getBar(between(2, 3))).thrice(); // was called with arg between 2-3 exactly three times
-verify(mockedFoo.getBar(anyNumber()).times(4);    // was called with any number arg exactly four times
+verify(mockedFoo.getBar(anyNumber())).times(4);   // was called with any number arg exactly four times
 verify(mockedFoo.getBar(2)).atLeast(2);           // was called with arg === 2 min two times
 verify(mockedFoo.getBar(anything())).atMost(4);   // was called with any argument max four times
 verify(mockedFoo.getBar(4)).never();              // was never called with arg === 4
@@ -233,7 +232,7 @@ Or reset mock call counter with all stubs
 ``` typescript
 // Creating mock
 let mockedFoo:Foo = mock(Foo);
-when(mockedFoo.getBar(1)).thenReturn("one").
+when(mockedFoo.getBar(1)).thenReturn("one");
 
 // Getting instance
 let foo:Foo = instance(mockedFoo);
