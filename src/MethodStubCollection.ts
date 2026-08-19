@@ -1,4 +1,5 @@
-import * as _ from "lodash";
+import _ from "lodash";
+import {Matcher} from "./matcher/type/Matcher";
 import {MethodStub} from "./stub/MethodStub";
 
 export class MethodStubCollection {
@@ -6,6 +7,10 @@ export class MethodStubCollection {
 
     public add(item: MethodStub) {
         this.items.push(item);
+    }
+
+    public getConfiguredMatchers(): Matcher[][] {
+        return this.items.map((item: MethodStub) => item.getMatchers());
     }
 
     public getLastMatchingGroupIndex(args): number {

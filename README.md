@@ -1,8 +1,11 @@
-# @typestrong/ts-mockito [![build badge](https://github.com/TypeStrong/ts-mockito/actions/workflows/test.yml/badge.svg)](https://github.com/TypeStrong/ts-mockito/actions?query=branch%3Amaster) [![codecov](https://codecov.io/gh/TypeStrong/ts-mockito/branch/master/graph/badge.svg)](https://codecov.io/gh/TypeStrong/ts-mockito)
+# @typestrong/ts-mockito 
+![NPM Version](https://img.shields.io/npm/v/%40typestrong%2Fts-mockito?style=flat) [![build badge](https://github.com/TypeStrong/ts-mockito/actions/workflows/test.yml/badge.svg)](https://github.com/TypeStrong/ts-mockito/actions?query=branch%3Amaster) [![codecov](https://codecov.io/gh/TypeStrong/ts-mockito/branch/master/graph/badge.svg)](https://codecov.io/gh/TypeStrong/ts-mockito)
 
-> This is a fork of https://github.com/NagRock/ts-mockito.  We hope to eventually re-merge and publish as ts-mockito.
+> This is a fork of https://github.com/NagRock/ts-mockito, which appears to be abandoned.
 
 Mocking library for TypeScript inspired by http://mockito.org/
+
+## Documentation https://typestrong.org/ts-mockito/
 
 ## 1.x to 2.x migration guide
 [1.x to 2.x migration guide](https://github.com/cspotcode/ts-mockito/wiki/ts-mockito-1.x-to-2.x-migration-guide)
@@ -91,8 +94,6 @@ console.log(foo.sampleGetter);
 
 Syntax is the same as with getter values.
 
-Please note, that stubbing properties that don't have getters only works if [Proxy](http://www.ecma-international.org/ecma-262/6.0/#sec-proxy-objects) object is available (ES6).
-
 ### Call count verification
 
 ``` typescript
@@ -112,10 +113,30 @@ foo.getBar(3);
 verify(mockedFoo.getBar(1)).once();               // was called with arg === 1 only once
 verify(mockedFoo.getBar(2)).twice();              // was called with arg === 2 exactly two times
 verify(mockedFoo.getBar(between(2, 3))).thrice(); // was called with arg between 2-3 exactly three times
-verify(mockedFoo.getBar(anyNumber()).times(4);    // was called with any number arg exactly four times
+verify(mockedFoo.getBar(anyNumber())).times(4);   // was called with any number arg exactly four times
 verify(mockedFoo.getBar(2)).atLeast(2);           // was called with arg === 2 min two times
 verify(mockedFoo.getBar(anything())).atMost(4);   // was called with any argument max four times
 verify(mockedFoo.getBar(4)).never();              // was never called with arg === 4
+```
+
+### Custom verification error message
+
+`verify` accepts an optional message as its second argument. If the verification fails, this
+message is prepended to the default failure output (similar to
+[jest-expect-message](https://github.com/mattphillips/jest-expect-message)) - you still get the
+usual "Expected ... to be called ... Actual calls: ..." diagnostics, plus your own context.
+
+``` typescript
+let mockedFoo:Foo = mock(Foo);
+let foo:Foo = instance(mockedFoo);
+
+foo.getBar(2);
+
+verify(mockedFoo.getBar(1), 'getBar should have been called with 1').once();
+// throws: getBar should have been called with 1
+//         Expected "getBar(strictEqual(1))" to be called 1 time(s). But has been called 0 time(s).
+//         Actual calls:
+//           getBar(2)
 ```
 
 ### Call order verification
@@ -213,7 +234,7 @@ Or reset mock call counter with all stubs
 ``` typescript
 // Creating mock
 let mockedFoo:Foo = mock(Foo);
-when(mockedFoo.getBar(1)).thenReturn("one").
+when(mockedFoo.getBar(1)).thenReturn("one");
 
 // Getting instance
 let foo:Foo = instance(mockedFoo);
@@ -301,18 +322,34 @@ console.log(foo.getBar(1));	// three
 console.log(foo.getBar(1));	// three - last defined behavior will be repeated infinity
 ```
 
-Possible errors:
+### Overlapping matchers
+
+When more than one stub matches the same call, the most recently defined one wins - not the
+most specific one. This lets you set a default behavior first and override it for specific
+inputs afterwards:
 
 ``` typescript
 const mockedFoo:Foo = mock(Foo);
 
-// When multiple matchers, matches same result:
-when(mockedFoo.getBar(anyNumber())).thenReturn('one');
-when(mockedFoo.getBar(3)).thenReturn('one');
+when(mockedFoo.getBar(anyNumber())).thenReturn('default');
+when(mockedFoo.getBar(3)).thenReturn('three');
 
 const foo:Foo = instance(mockedFoo);
-foo.getBar(3); // MultipleMatchersMatchSameStubError will be thrown, two matchers match same method call
+console.log(foo.getBar(3));  // 'three' - the more recently defined stub wins
+console.log(foo.getBar(5));  // 'default' - falls back to the only matching stub
+```
 
+Defining them in the opposite order changes which one wins, since it's always "last defined,"
+not "most specific":
+
+``` typescript
+const mockedFoo:Foo = mock(Foo);
+
+when(mockedFoo.getBar(3)).thenReturn('three');
+when(mockedFoo.getBar(anyNumber())).thenReturn('default');
+
+const foo:Foo = instance(mockedFoo);
+console.log(foo.getBar(3));  // 'default' - defined after the '3'-specific stub, so it wins even for 3
 ```
 
 ### Mocking interfaces
@@ -321,8 +358,8 @@ You can mock interfaces too, just instead of passing type to `mock` function, se
 Mocking interfaces requires `Proxy` implementation
 
 ``` typescript
-let mockedFoo:Foo = mock<FooInterface>(); // instead of mock(FooInterface)
-const foo: SampleGeneric<FooInterface> = instance(mockedFoo);
+let mockedFoo: FooInterface = mock<FooInterface>(); // instead of mock(FooInterface)
+const foo: FooInterface = instance(mockedFoo);
 ```
 
 ### Mocking types

@@ -1,12 +1,12 @@
-import * as _ from "lodash";
+import _ from "lodash";
 import {Matcher} from "./Matcher";
-import * as safeJsonStringify from "safe-json-stringify";
-export class DeepEqualMatcher<T> extends Matcher {
+import safeJsonStringify from "safe-json-stringify";
+export class DeepEqualMatcher<T> extends Matcher<T> {
     constructor(private expectedValue: T) {
         super();
     }
 
-    public match(value: any): boolean {
+    public match(value: T): boolean {
         return _.isEqualWith(this.expectedValue, value,
             (expected: any, actual: any) => {
                 if (expected instanceof Matcher) {

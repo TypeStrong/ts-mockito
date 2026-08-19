@@ -1,9 +1,10 @@
+import {Matcher} from "../matcher/type/Matcher";
 import {MethodStub} from "./MethodStub";
 
 export class CallThroughMethodStub implements MethodStub {
     private result: any;
 
-    constructor(private instance: any, private method: Function) {
+    constructor(private instance: any, private method: (...args: any[]) => any) {
     }
 
     public getGroupIndex(): number {
@@ -20,5 +21,9 @@ export class CallThroughMethodStub implements MethodStub {
 
     public getValue(): any {
         return this.result;
+    }
+
+    public getMatchers(): Matcher[] {
+        return [];
     }
 }

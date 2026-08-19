@@ -1,12 +1,13 @@
-import * as _ from "lodash";
+import _ from "lodash";
 import {Matcher} from "./Matcher";
 
-export class ObjectContainingMatcher extends Matcher {
+// eslint-disable-next-line @typescript-eslint/no-wrapper-object-types -- narrowing to `object` would reject primitives consumers could previously pass, a public API break
+export class ObjectContainingMatcher<T extends Object = Object> extends Matcher<T> {
     constructor(private expectedValue: any) {
         super();
     }
 
-    public match(value: Object): boolean {
+    public match(value: T): boolean {
         return _.isMatch(value, this.expectedValue);
     }
 

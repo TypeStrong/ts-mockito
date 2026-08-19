@@ -22,4 +22,8 @@ export class CallFunctionMethodStub extends AbstractMethodStub implements Method
     public getValue(): any {
         return this.functionResult;
     }
+
+    public getMatchers(): Matcher[] {
+        return this.matchers;
+    }
 }

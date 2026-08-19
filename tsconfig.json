@@ -1,23 +1,24 @@
 {
   "compilerOptions": {
-    "experimentalDecorators": true,
     "outDir": "./lib",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "target": "es5",
-    "removeComments": true,
+    "experimentalDecorators": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "target": "es2020",
+    "esModuleInterop": true,
     "sourceMap": true,
     "declaration": true,
     "strictNullChecks": true,
     "lib": [
-      "es5",
-      "es6",
-      "dom"
+      "es2020"
     ],
     "types": [
       "node",
-      "lodash",
-      "jasmine"
+      "lodash"
     ]
-  }
+  },
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts"
+  ]
 }

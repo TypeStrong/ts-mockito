@@ -21,4 +21,8 @@ export class ThrowErrorMethodStub extends AbstractMethodStub implements MethodSt
     public getValue(): any {
         return null;
     }
+
+    public getMatchers(): Matcher[] {
+        return this.matchers;
+    }
 }
