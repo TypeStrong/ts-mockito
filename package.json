@@ -1,6 +1,6 @@
 {
   "name": "@typestrong/ts-mockito",
-  "version": "2.7.12",
+  "version": "3.0.0",
   "description": "Mocking library for TypeScript",
   "type": "module",
   "main": "./dist/ts-mockito.cjs",
