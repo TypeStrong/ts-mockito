@@ -18,6 +18,7 @@ import {AnyStringMatcher} from "./matcher/type/AnyStringMatcher";
 import {AnythingMatcher} from "./matcher/type/AnythingMatcher";
 import {BetweenMatcher} from "./matcher/type/BetweenMatcher";
 import {DeepEqualMatcher} from "./matcher/type/DeepEqualMatcher";
+import {Matcher} from "./matcher/type/Matcher";
 import {MatchingStringMatcher} from "./matcher/type/MatchingStringMatcher";
 import {NotNullMatcher} from "./matcher/type/NotNullMatcher";
 import {ObjectContainingMatcher} from "./matcher/type/ObjectContainingMatcher";
@@ -82,44 +83,45 @@ export function resetCalls<T>(...mockedValues: T[]): void {
     mockedValues.forEach(mockedValue => (mockedValue as any).__tsmockitoMocker.resetCalls());
 }
 
-export function anyOfClass<T>(expectedClass: new (...args: any[]) => T): any {
-    return new AnyOfClassMatcher(expectedClass) as any;
+export function anyOfClass<T>(expectedClass: new (...args: any[]) => T): T & Matcher<T> {
+    return new AnyOfClassMatcher(expectedClass) as unknown as T & Matcher<T>;
 }
 
-export function anyFunction(): any {
-    return new AnyFunctionMatcher() as any;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type -- matches any function shape, which is what the matcher checks for
+export function anyFunction<T extends Function = Function>(): T & Matcher<T> {
+    return new AnyFunctionMatcher<T>() as unknown as T & Matcher<T>;
 }
 
-export function anyNumber(): any {
-    return new AnyNumberMatcher() as any;
+export function anyNumber(): number & Matcher<number> {
+    return new AnyNumberMatcher() as unknown as number & Matcher<number>;
 }
 
-export function anyString(): any {
-    return new AnyStringMatcher() as any;
+export function anyString(): string & Matcher<string> {
+    return new AnyStringMatcher() as unknown as string & Matcher<string>;
 }
 
-export function anything(): any {
-    return new AnythingMatcher() as any;
+export function anything<T = unknown>(): T & Matcher<T> {
+    return new AnythingMatcher() as unknown as T & Matcher<T>;
 }
 
-export function between(min: number, max: number): any {
-    return new BetweenMatcher(min, max) as any;
+export function between(min: number, max: number): number & Matcher<number> {
+    return new BetweenMatcher(min, max) as unknown as number & Matcher<number>;
 }
 
 export function deepEqual<T>(expectedValue: T): T {
     return new DeepEqualMatcher<T>(expectedValue) as any;
 }
 
-export function notNull(): any {
-    return new NotNullMatcher() as any;
+export function notNull<T = unknown>(): T & Matcher<T> {
+    return new NotNullMatcher() as unknown as T & Matcher<T>;
 }
 
-export function strictEqual(expectedValue: any): any {
-    return new StrictEqualMatcher(expectedValue) as any;
+export function strictEqual<T>(expectedValue: T): T & Matcher<T> {
+    return new StrictEqualMatcher<T>(expectedValue) as unknown as T & Matcher<T>;
 }
 
-export function match(expectedValue: RegExp | string): any {
-    return new MatchingStringMatcher(expectedValue) as any;
+export function match(expectedValue: RegExp | string): string & Matcher<string> {
+    return new MatchingStringMatcher(expectedValue) as unknown as string & Matcher<string>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types -- narrowing to `object` would reject primitives consumers could previously pass, a public API break
